@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#6C63FF" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="بصيرة" />
+  <meta name="description" content="تطبيق تذكير يومي للصم - تنبيهات بصرية قوية" />
+  <title>بصيرة - تذكير يومي</title>
+
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="assets/icons/icon-192.png" />
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet" />
+</head>
+<body class="light-mode">
+
+  <!-- ══════════════════════════════════
+       ONBOARDING SCREEN
+  ══════════════════════════════════ -->
+  <div id="onboarding" class="onboarding-overlay">
+    <div class="onboarding-slides">
+
+      <div class="onboarding-slide active" data-slide="0">
+        <div class="slide-visual">
+          <div class="slide-icon-wrap pulse-anim">
+            <span class="slide-emoji">👁️</span>
+          </div>
+          <div class="slide-glow"></div>
+        </div>
+        <h1 class="slide-title">بصيرة</h1>
+        <p class="slide-sub">تطبيق التذكير البصري للصم وضعاف السمع</p>
+      </div>
+
+      <div class="onboarding-slide" data-slide="1">
+        <div class="slide-visual">
+          <div class="slide-icon-wrap flash-anim">
+            <span class="slide-emoji">⚡</span>
+          </div>
+        </div>
+        <h2 class="slide-title">تنبيهات بصرية قوية</h2>
+        <p class="slide-sub">شاشة كاملة ومضيئة تضمن أنك لن تفوّت أي تذكير مهم</p>
+      </div>
+
+      <div class="onboarding-slide" data-slide="2">
+        <div class="slide-visual">
+          <div class="slide-icon-wrap bounce-anim">
+            <span class="slide-emoji">🕌</span>
+          </div>
+        </div>
+        <h2 class="slide-title">قوالب جاهزة</h2>
+        <p class="slide-sub">تذكيرات الصلاة وغيرها جاهزة بنقرة واحدة</p>
+      </div>
+
+      <div class="onboarding-slide" data-slide="3">
+        <div class="slide-visual">
+          <div class="slide-icon-wrap rotate-anim">
+            <span class="slide-emoji">📅</span>
+          </div>
+        </div>
+        <h2 class="slide-title">ابدأ الآن</h2>
+        <p class="slide-sub">نظّم يومك وأدِر مواعيدك بسهولة تامة</p>
+      </div>
+
+    </div>
+
+    <div class="onboarding-dots">
+      <span class="dot active" data-dot="0"></span>
+      <span class="dot" data-dot="1"></span>
+      <span class="dot" data-dot="2"></span>
+      <span class="dot" data-dot="3"></span>
+    </div>
+
+    <div class="onboarding-actions">
+      <button id="ob-next" class="btn-primary-large">التالي</button>
+      <button id="ob-skip" class="btn-ghost">تخطي</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       MAIN APP SHELL
+  ══════════════════════════════════ -->
+  <div id="app" class="app-shell hidden">
+
+    <!-- Status Bar Spacer -->
+    <div class="status-bar-spacer"></div>
+
+    <!-- ── TOP APP BAR ── -->
+    <header class="top-bar" id="topBar">
+      <div class="top-bar-content">
+        <div class="top-bar-title-wrap">
+          <span class="app-logo-dot"></span>
+          <h1 class="top-bar-title" id="pageTitle">الرئيسية</h1>
+        </div>
+        <div class="top-bar-actions">
+          <button class="icon-btn" id="darkModeToggle" aria-label="تبديل الوضع">
+            <svg class="icon sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+            <svg class="icon moon-icon hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          </button>
+          <button class="icon-btn" id="notifPermBtn" aria-label="إشعارات">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- ── PAGE CONTAINER ── -->
+    <main class="page-container">
+
+      <!-- ─── HOME PAGE ─── -->
+      <section id="page-home" class="page active">
+
+        <!-- Greeting -->
+        <div class="greeting-card">
+          <div class="greeting-text">
+            <p class="greeting-label">مرحباً 👋</p>
+            <h2 class="greeting-date" id="greetingDate"></h2>
+          </div>
+          <div class="greeting-stat">
+            <span class="stat-num" id="todayCount">0</span>
+            <span class="stat-label">تذكير اليوم</span>
+          </div>
+        </div>
+
+        <!-- Quick Templates -->
+        <div class="section-header">
+          <h3 class="section-title">قوالب سريعة</h3>
+        </div>
+        <div class="templates-scroll">
+          <button class="template-chip" data-template="fajr">
+            <span class="chip-icon">🕌</span>
+            <span>الفجر</span>
+          </button>
+          <button class="template-chip" data-template="dhuhr">
+            <span class="chip-icon">☀️</span>
+            <span>الظهر</span>
+          </button>
+          <button class="template-chip" data-template="asr">
+            <span class="chip-icon">🌤️</span>
+            <span>العصر</span>
+          </button>
+          <button class="template-chip" data-template="maghrib">
+            <span class="chip-icon">🌅</span>
+            <span>المغرب</span>
+          </button>
+          <button class="template-chip" data-template="isha">
+            <span class="chip-icon">🌙</span>
+            <span>العشاء</span>
+          </button>
+          <button class="template-chip" data-template="medicine">
+            <span class="chip-icon">💊</span>
+            <span>دواء</span>
+          </button>
+          <button class="template-chip" data-template="meeting">
+            <span class="chip-icon">📋</span>
+            <span>اجتماع</span>
+          </button>
+        </div>
+
+        <!-- Today's Tasks -->
+        <div class="section-header">
+          <h3 class="section-title">مهام اليوم</h3>
+          <button class="btn-add-task" id="addTaskBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            إضافة
+          </button>
+        </div>
+
+        <div id="taskList" class="task-list">
+          <div class="empty-state" id="emptyState">
+            <div class="empty-icon">📭</div>
+            <p>لا توجد مهام لهذا اليوم</p>
+            <button class="btn-ghost-accent" id="emptyAddBtn">أضف مهمة جديدة</button>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ─── CALENDAR PAGE ─── -->
+      <section id="page-calendar" class="page">
+        <div class="calendar-wrap">
+          <div class="calendar-header">
+            <button class="cal-nav-btn" id="prevMonth">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <h3 id="calMonthLabel" class="cal-month-label"></h3>
+            <button class="cal-nav-btn" id="nextMonth">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+          </div>
+          <div class="cal-days-header">
+            <span>أح</span><span>إث</span><span>ثل</span><span>أر</span><span>خم</span><span>جم</span><span>سب</span>
+          </div>
+          <div class="cal-grid" id="calGrid"></div>
+        </div>
+
+        <div class="section-header" style="margin-top:1.5rem">
+          <h3 class="section-title" id="calSelectedLabel">المهام</h3>
+        </div>
+        <div id="calTaskList" class="task-list"></div>
+      </section>
+
+      <!-- ─── SETTINGS PAGE ─── -->
+      <section id="page-settings" class="page">
+        <div class="settings-list">
+
+          <div class="settings-group">
+            <h4 class="settings-group-title">المظهر</h4>
+            <div class="settings-item">
+              <div class="settings-item-info">
+                <span class="settings-icon">🌙</span>
+                <div>
+                  <p class="settings-label">الوضع الداكن</p>
+                  <p class="settings-desc">تبديل المظهر الفاتح/الداكن</p>
+                </div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="darkModeSwitch" />
+                <span class="toggle-track"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="settings-group">
+            <h4 class="settings-group-title">الإشعارات</h4>
+            <div class="settings-item">
+              <div class="settings-item-info">
+                <span class="settings-icon">🔔</span>
+                <div>
+                  <p class="settings-label">إشعارات النظام</p>
+                  <p class="settings-desc">السماح بإشعارات المتصفح</p>
+                </div>
+              </div>
+              <button class="btn-small-accent" id="reqNotifBtn">تفعيل</button>
+            </div>
+            <div class="settings-item">
+              <div class="settings-item-info">
+                <span class="settings-icon">📳</span>
+                <div>
+                  <p class="settings-label">الاهتزاز</p>
+                  <p class="settings-desc">اهتزاز عند التنبيه</p>
+                </div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="vibrationSwitch" checked />
+                <span class="toggle-track"></span>
+              </label>
+            </div>
+            <div class="settings-item">
+              <div class="settings-item-info">
+                <span class="settings-icon">🔁</span>
+                <div>
+                  <p class="settings-label">تكرار التنبيه</p>
+                  <p class="settings-desc">تكرار كل عدة ثوانٍ حتى الإقرار</p>
+                </div>
+              </div>
+              <select class="settings-select" id="repeatInterval">
+                <option value="3">3 ثوانٍ</option>
+                <option value="5" selected>5 ثوانٍ</option>
+                <option value="10">10 ثوانٍ</option>
+                <option value="15">15 ثوانٍ</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="settings-group">
+            <h4 class="settings-group-title">البيانات</h4>
+            <div class="settings-item">
+              <div class="settings-item-info">
+                <span class="settings-icon">🗑️</span>
+                <div>
+                  <p class="settings-label">مسح كل البيانات</p>
+                  <p class="settings-desc">حذف جميع المهام والإعدادات</p>
+                </div>
+              </div>
+              <button class="btn-small-danger" id="clearDataBtn">مسح</button>
+            </div>
+          </div>
+
+          <div class="settings-group">
+            <h4 class="settings-group-title">عن التطبيق</h4>
+            <div class="settings-item about-item">
+              <div class="app-about">
+                <div class="about-logo">👁️</div>
+                <div>
+                  <p class="about-name">بصيرة</p>
+                  <p class="about-ver">الإصدار 1.0.0</p>
+                  <p class="about-desc">تطبيق تذكير يومي للصم وضعاف السمع</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+
+    <!-- ── BOTTOM NAV ── -->
+    <nav class="bottom-nav" id="bottomNav">
+      <button class="nav-item active" data-page="home">
+        <div class="nav-icon-wrap">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </div>
+        <span class="nav-label">الرئيسية</span>
+      </button>
+      <button class="nav-item" data-page="calendar">
+        <div class="nav-icon-wrap">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        </div>
+        <span class="nav-label">التقويم</span>
+      </button>
+      <button class="nav-item nav-fab" id="fabBtn" data-page="">
+        <div class="fab-inner">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </div>
+      </button>
+      <button class="nav-item" data-page="settings">
+        <div class="nav-icon-wrap">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        </div>
+        <span class="nav-label">الإعدادات</span>
+      </button>
+      <div class="nav-item nav-placeholder"></div>
+    </nav>
+
+  </div><!-- /#app -->
+
+
+  <!-- ══════════════════════════════════
+       TASK MODAL (Add / Edit)
+  ══════════════════════════════════ -->
+  <div id="taskModal" class="modal-overlay hidden">
+    <div class="modal-sheet" id="taskSheet">
+      <div class="modal-handle"></div>
+      <div class="modal-header">
+        <h3 class="modal-title" id="modalTitle">مهمة جديدة</h3>
+        <button class="modal-close-btn" id="closeModal">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Icon picker -->
+        <div class="form-group">
+          <label class="form-label">الأيقونة</label>
+          <div class="icon-picker" id="iconPicker">
+            <button class="icon-opt active" data-icon="🔔">🔔</button>
+            <button class="icon-opt" data-icon="🕌">🕌</button>
+            <button class="icon-opt" data-icon="💊">💊</button>
+            <button class="icon-opt" data-icon="📋">📋</button>
+            <button class="icon-opt" data-icon="🏃">🏃</button>
+            <button class="icon-opt" data-icon="🍽️">🍽️</button>
+            <button class="icon-opt" data-icon="💧">💧</button>
+            <button class="icon-opt" data-icon="📚">📚</button>
+            <button class="icon-opt" data-icon="🚗">🚗</button>
+            <button class="icon-opt" data-icon="👨‍👩‍👧">👨‍👩‍👧</button>
+            <button class="icon-opt" data-icon="💰">💰</button>
+            <button class="icon-opt" data-icon="⚽">⚽</button>
+          </div>
+        </div>
+
+        <!-- Title -->
+        <div class="form-group">
+          <label class="form-label" for="taskTitle">العنوان *</label>
+          <input type="text" id="taskTitle" class="form-input" placeholder="أدخل عنوان المهمة" maxlength="60" />
+        </div>
+
+        <!-- Description -->
+        <div class="form-group">
+          <label class="form-label" for="taskDesc">الوصف</label>
+          <textarea id="taskDesc" class="form-textarea" placeholder="تفاصيل إضافية..." rows="3" maxlength="200"></textarea>
+        </div>
+
+        <!-- Date + Time -->
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="taskDate">التاريخ *</label>
+            <input type="date" id="taskDate" class="form-input" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="taskTime">الوقت *</label>
+            <input type="time" id="taskTime" class="form-input" />
+          </div>
+        </div>
+
+        <!-- Color tag -->
+        <div class="form-group">
+          <label class="form-label">لون التصنيف</label>
+          <div class="color-picker" id="colorPicker">
+            <button class="color-opt active" data-color="#6C63FF" style="background:#6C63FF"></button>
+            <button class="color-opt" data-color="#FF6B6B" style="background:#FF6B6B"></button>
+            <button class="color-opt" data-color="#4ECDC4" style="background:#4ECDC4"></button>
+            <button class="color-opt" data-color="#FFA23A" style="background:#FFA23A"></button>
+            <button class="color-opt" data-color="#45B7D1" style="background:#45B7D1"></button>
+            <button class="color-opt" data-color="#96CEB4" style="background:#96CEB4"></button>
+            <button class="color-opt" data-color="#FF8B94" style="background:#FF8B94"></button>
+            <button class="color-opt" data-color="#A8E6CF" style="background:#A8E6CF"></button>
+          </div>
+        </div>
+
+        <!-- Repeat / Enable -->
+        <div class="form-group toggle-row">
+          <div>
+            <p class="form-label" style="margin:0">مفعّل</p>
+            <p class="form-hint">تفعيل/تعطيل هذا التذكير</p>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="taskEnabled" checked />
+            <span class="toggle-track"></span>
+          </label>
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-secondary" id="cancelTask">إلغاء</button>
+        <button class="btn-primary" id="saveTask">حفظ المهمة</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════
+       FULL-SCREEN ALERT OVERLAY
+  ══════════════════════════════════ -->
+  <div id="alertOverlay" class="alert-overlay hidden">
+    <div class="alert-flash-layer" id="alertFlash"></div>
+    <div class="alert-content shake-anim" id="alertContent">
+      <div class="alert-icon-wrap pulse-big" id="alertIcon">🔔</div>
+      <h1 class="alert-title" id="alertTitle">تذكير!</h1>
+      <p class="alert-desc" id="alertDesc"></p>
+      <div class="alert-time-badge" id="alertTime"></div>
+      <button class="alert-done-btn" id="alertDoneBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+        تم ✓
+      </button>
+      <p class="alert-hint">اضغط "تم" للإقرار بالتذكير</p>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════
+       TOAST NOTIFICATION
+  ══════════════════════════════════ -->
+  <div id="toast" class="toast hidden"></div>
+
+
+  <!-- ══════════════════════════════════
+       CONFIRM DIALOG
+  ══════════════════════════════════ -->
+  <div id="confirmDialog" class="modal-overlay hidden">
+    <div class="confirm-sheet">
+      <div class="confirm-icon" id="confirmIcon">⚠️</div>
+      <h3 id="confirmTitle">تأكيد</h3>
+      <p id="confirmMsg">هل أنت متأكد؟</p>
+      <div class="confirm-actions">
+        <button id="confirmCancel" class="btn-secondary">إلغاء</button>
+        <button id="confirmOk" class="btn-danger">تأكيد</button>
+      </div>
+    </div>
+  </div>
+
+
+  <script src="script.js"></script>
+</body>
+</html>

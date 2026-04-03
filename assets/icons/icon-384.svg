@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="384" height="384" viewBox="0 0 384 384">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="#6C63FF"/>
+      <stop offset="100%" stop-color="#4A43CC"/>
+    </linearGradient>
+    <linearGradient id="glow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="rgba(255,255,255,0.25)"/>
+      <stop offset="100%" stop-color="rgba(255,255,255,0.05)"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="384" height="384" rx="69.12" fill="url(#bg)"/>
+
+  <!-- Inner highlight -->
+  <rect x="57.599999999999994" y="57.599999999999994" width="268.8" height="211.20000000000002"
+        rx="41.472" fill="url(#glow)" opacity="0.5"/>
+
+  <!-- Eye symbol -->
+  <g transform="translate(192.0,192.0)">
+    <!-- Outer eye shape -->
+    <ellipse rx="72.96000000000001" ry="45.6" fill="white" opacity="0.95"/>
+    <!-- Iris -->
+    <circle r="26.530909090909095" fill="#1A1733"/>
+    <!-- Pupil highlight -->
+    <circle cx="-8.106666666666667" cy="-8.106666666666667" r="10.422857142857143" fill="white" opacity="0.8"/>
+    <!-- Eyelashes top -->
+    <path d="M-36.480000000000004,-38.400000000000006 L-32.42666666666667,-66.32727272727273" stroke="white" stroke-width="6.911999999999999" stroke-linecap="round" opacity="0.7"/>
+    <path d="M0,-45.6 L0,-72.96000000000001" stroke="white" stroke-width="6.911999999999999" stroke-linecap="round" opacity="0.7"/>
+    <path d="M36.480000000000004,-38.400000000000006 L32.42666666666667,-66.32727272727273" stroke="white" stroke-width="6.911999999999999" stroke-linecap="round" opacity="0.7"/>
+  </g>
+
+  <!-- App name text (small) -->
+  <text x="192.0" y="326.4" text-anchor="middle"
+        font-family="Cairo, Tajawal, Arial" font-weight="900"
+        font-size="49.92" fill="white" opacity="0.9"
+        letter-spacing="3.84">بصيرة</text>
+</svg>
