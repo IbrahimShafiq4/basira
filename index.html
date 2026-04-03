@@ -2,472 +2,492 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <meta name="theme-color" content="#6C63FF" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="بصيرة" />
-  <meta name="description" content="تطبيق تذكير يومي للصم - تنبيهات بصرية قوية" />
-  <title>بصيرة - تذكير يومي</title>
-
+  <meta name="apple-mobile-web-app-title" content="الصاحب الصامت" />
+  <meta name="description" content="تطبيق تذكير بصري واهتزاز للصم وضعاف السمع" />
+  <title>الصاحب الصامت - Silent Buddy</title>
   <link rel="manifest" href="manifest.json" />
-  <link rel="apple-touch-icon" href="assets/icons/icon-192.png" />
-  <link rel="stylesheet" href="style.css" />
-
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet" />
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%236C63FF'/%3E%3Ctext x='50' y='70' font-size='50' text-anchor='middle' fill='white'%3E👁️%3C/text%3E%3C/svg%3E" />
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+    :root{--accent:#6C63FF;--accent-light:#8B85FF;--accent-dark:#4A43CC;--accent-glow:rgba(108,99,255,0.25);--success:#10B981;--danger:#EF4444;--bg-base:#F5F4FF;--bg-surface:#FFFFFF;--bg-elevated:#FFFFFF;--text-primary:#1A1733;--text-secondary:#6B6B8A;--text-muted:#A0A0BE;--border:rgba(108,99,255,0.12);--shadow-sm:0 2px 8px rgba(108,99,255,0.08);--shadow-md:0 4px 20px rgba(108,99,255,0.12);--shadow-lg:0 8px 40px rgba(108,99,255,0.18);--nav-height:72px;--topbar-height:60px;--safe-bottom:env(safe-area-inset-bottom,0px);--radius-lg:24px;--radius-xl:32px;--radius-full:999px;--font-main:'Cairo','Tajawal',sans-serif}
+    body.dark-mode{--bg-base:#0F0E1A;--bg-surface:#1A1830;--bg-elevated:#252340;--text-primary:#F0EEFF;--text-secondary:#A09CC0;--text-muted:#5C5A7A;--border:rgba(108,99,255,0.15)}
+    body{font-family:var(--font-main);background:var(--bg-base);color:var(--text-primary);height:100vh;overflow:hidden;transition:background 0.3s}
+    .app-shell{display:flex;flex-direction:column;height:100dvh;overflow:hidden}
+    .app-shell.hidden{display:none}
+    .status-bar-spacer{height:env(safe-area-inset-top,0px)}
+    .top-bar{background:var(--bg-surface);border-bottom:1px solid var(--border);padding:0 1rem;height:var(--topbar-height);flex-shrink:0}
+    .top-bar-content{display:flex;align-items:center;justify-content:space-between;height:100%}
+    .top-bar-title{font-size:1.2rem;font-weight:800}
+    .icon-btn{width:40px;height:40px;border-radius:50%;border:none;background:var(--bg-base);color:var(--text-secondary);display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+    .icon{width:20px;height:20px}
+    .page-container{flex:1;overflow-y:auto;scrollbar-width:none}
+    .page-container::-webkit-scrollbar{display:none}
+    .page{display:none;padding:1rem 1rem calc(var(--nav-height) + var(--safe-bottom) + 1rem)}
+    .page.active{display:block}
+    .greeting-card{background:linear-gradient(135deg,var(--accent),var(--accent-dark));border-radius:var(--radius-xl);padding:1.5rem;display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;box-shadow:var(--shadow-lg)}
+    .greeting-date{font-size:1rem;font-weight:700;color:#fff}
+    .greeting-stat{background:rgba(255,255,255,0.15);border-radius:18px;padding:0.5rem 1rem;text-align:center}
+    .stat-num{font-size:1.8rem;font-weight:900;color:#fff;line-height:1}
+    .stat-label{font-size:0.7rem;color:rgba(255,255,255,0.8)}
+    .section-header{display:flex;justify-content:space-between;align-items:center;margin:1rem 0 0.75rem}
+    .section-title{font-weight:700}
+    .templates-scroll{display:flex;gap:0.6rem;overflow-x:auto;margin-bottom:1.5rem;padding-bottom:0.25rem}
+    .templates-scroll::-webkit-scrollbar{display:none}
+    .template-chip{flex-shrink:0;display:flex;align-items:center;gap:6px;padding:0.5rem 1rem;background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-full);font-weight:600;cursor:pointer}
+    .btn-add-task{display:flex;align-items:center;gap:4px;padding:0.4rem 0.9rem;background:linear-gradient(135deg,var(--accent),var(--accent-dark));color:#fff;border:none;border-radius:var(--radius-full);font-weight:700;cursor:pointer}
+    .task-list{display:flex;flex-direction:column;gap:0.75rem}
+    .task-card{background:var(--bg-surface);border-radius:var(--radius-lg);padding:1rem;display:flex;align-items:flex-start;gap:0.875rem;box-shadow:var(--shadow-sm);border:1px solid var(--border);position:relative}
+    .task-card::before{content:'';position:absolute;top:0;right:0;width:4px;height:100%;background:var(--task-color,var(--accent));border-radius:0 12px 12px 0}
+    .task-icon-wrap{width:46px;height:46px;background:var(--bg-base);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.4rem}
+    .task-body{flex:1}
+    .task-title{font-weight:700;margin-bottom:0.2rem}
+    .task-desc{font-size:0.75rem;color:var(--text-secondary)}
+    .task-meta{display:flex;gap:6px;margin-top:6px}
+    .task-time-badge{font-size:0.7rem;background:var(--bg-base);padding:2px 8px;border-radius:20px}
+    .task-actions{display:flex;flex-direction:column;gap:4px}
+    .task-action-btn{width:32px;height:32px;border-radius:12px;border:none;background:var(--bg-base);cursor:pointer}
+    .empty-state{text-align:center;padding:2rem;color:var(--text-muted)}
+    .bottom-nav{position:fixed;bottom:0;left:0;right:0;height:calc(var(--nav-height) + var(--safe-bottom));padding-bottom:var(--safe-bottom);background:var(--bg-surface);border-top:1px solid var(--border);display:grid;grid-template-columns:1fr 1fr 80px 1fr 1fr;align-items:center;z-index:100}
+    .nav-item{display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;cursor:pointer}
+    .nav-icon{width:22px;height:22px;color:var(--text-muted)}
+    .nav-label{font-size:0.65rem;color:var(--text-muted)}
+    .nav-item.active .nav-icon{color:var(--accent)}
+    .nav-item.active .nav-label{color:var(--accent)}
+    .fab-inner{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent-dark));display:flex;align-items:center;justify-content:center;box-shadow:0 8px 20px rgba(108,99,255,0.4);margin-top:-16px}
+    .fab-inner svg{width:28px;height:28px;color:#fff}
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;display:flex;align-items:flex-end;backdrop-filter:blur(4px)}
+    .modal-overlay.hidden{display:none}
+    .modal-sheet{background:var(--bg-surface);border-radius:32px 32px 0 0;width:100%;max-height:85vh;display:flex;flex-direction:column}
+    .modal-header{padding:1rem 1.25rem 0;display:flex;justify-content:space-between}
+    .modal-body{padding:1rem 1.25rem;overflow-y:auto;display:flex;flex-direction:column;gap:1rem}
+    .form-input,.form-textarea{width:100%;padding:0.75rem;background:var(--bg-base);border:1px solid var(--border);border-radius:16px;color:var(--text-primary);font-family:var(--font-main)}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem}
+    .icon-picker,.color-picker{display:flex;flex-wrap:wrap;gap:8px}
+    .icon-opt{width:44px;height:44px;border-radius:12px;border:1px solid var(--border);background:var(--bg-base);font-size:1.3rem;cursor:pointer}
+    .icon-opt.active{border-color:var(--accent);background:var(--accent-glow)}
+    .color-opt{width:36px;height:36px;border-radius:50%;border:2px solid transparent;cursor:pointer}
+    .color-opt.active{border-color:var(--text-primary);transform:scale(1.1)}
+    .modal-footer{padding:1rem 1.25rem;display:flex;gap:0.75rem;border-top:1px solid var(--border)}
+    .btn-primary{flex:1;padding:0.8rem;background:linear-gradient(135deg,var(--accent),var(--accent-dark));color:#fff;border:none;border-radius:24px;font-weight:700;cursor:pointer}
+    .btn-secondary{flex:1;padding:0.8rem;background:var(--bg-base);border:1px solid var(--border);border-radius:24px;cursor:pointer}
+    .alert-overlay{position:fixed;inset:0;z-index:9000;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.7);backdrop-filter:blur(6px)}
+    .alert-overlay.hidden{display:none}
+    .alert-flash-layer{position:absolute;inset:0;animation:flashBg 0.5s ease-in-out infinite alternate}
+    @keyframes flashBg{0%{background:rgba(108,99,255,0)}100%{background:rgba(108,99,255,0.4)}}
+    .alert-content{background:var(--bg-surface);border-radius:48px;padding:2rem;margin:1.5rem;width:calc(100% - 3rem);max-width:360px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.4);animation:popIn 0.3s cubic-bezier(0.34,1.56,0.64,1)}
+    @keyframes popIn{from{transform:scale(0.8);opacity:0}to{transform:scale(1);opacity:1}}
+    .alert-icon-wrap{font-size:4rem;margin-bottom:1rem;animation:pulse 0.8s infinite}
+    @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+    .alert-title{font-size:1.8rem;font-weight:900}
+    .alert-done-btn{width:100%;padding:1rem;background:var(--success);color:#fff;border:none;border-radius:40px;font-size:1.2rem;font-weight:bold;margin-top:1.5rem;cursor:pointer}
+    .toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:var(--bg-elevated);padding:0.6rem 1.2rem;border-radius:40px;z-index:1000;font-weight:600;box-shadow:var(--shadow-md);white-space:nowrap}
+    .toast.hidden{display:none}
+    .toggle-switch{position:relative}
+    .toggle-track{display:block;width:52px;height:30px;border-radius:30px;background:var(--bg-base);border:2px solid var(--border);cursor:pointer;position:relative}
+    .toggle-track::after{content:'';position:absolute;top:2px;right:2px;width:22px;height:22px;border-radius:50%;background:var(--text-muted);transition:0.2s}
+    .toggle-switch input:checked+.toggle-track{background:var(--accent)}
+    .toggle-switch input:checked+.toggle-track::after{right:auto;left:2px;background:#fff}
+    .settings-item{display:flex;justify-content:space-between;align-items:center;padding:1rem;border-bottom:1px solid var(--border)}
+    .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:8px}
+    .cal-day{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:12px;cursor:pointer}
+    .cal-day.today{background:var(--accent);color:#fff}
+    .cal-day.selected{background:var(--accent-glow);border:2px solid var(--accent)}
+    .hidden{display:none!important}
+  </style>
 </head>
 <body class="light-mode">
 
-  <!-- ══════════════════════════════════
-       ONBOARDING SCREEN
-  ══════════════════════════════════ -->
-  <div id="onboarding" class="onboarding-overlay">
-    <div class="onboarding-slides">
-
-      <div class="onboarding-slide active" data-slide="0">
-        <div class="slide-visual">
-          <div class="slide-icon-wrap pulse-anim">
-            <span class="slide-emoji">👁️</span>
-          </div>
-          <div class="slide-glow"></div>
-        </div>
-        <h1 class="slide-title">بصيرة</h1>
-        <p class="slide-sub">تطبيق التذكير البصري للصم وضعاف السمع</p>
+<div id="app" class="app-shell">
+  <div class="status-bar-spacer"></div>
+  <header class="top-bar">
+    <div class="top-bar-content">
+      <h1 class="top-bar-title" id="pageTitle">الرئيسية</h1>
+      <div class="top-bar-actions">
+        <button class="icon-btn" id="darkModeToggle">🌙</button>
+        <button class="icon-btn" id="notifPermBtn">🔔</button>
       </div>
-
-      <div class="onboarding-slide" data-slide="1">
-        <div class="slide-visual">
-          <div class="slide-icon-wrap flash-anim">
-            <span class="slide-emoji">⚡</span>
-          </div>
-        </div>
-        <h2 class="slide-title">تنبيهات بصرية قوية</h2>
-        <p class="slide-sub">شاشة كاملة ومضيئة تضمن أنك لن تفوّت أي تذكير مهم</p>
-      </div>
-
-      <div class="onboarding-slide" data-slide="2">
-        <div class="slide-visual">
-          <div class="slide-icon-wrap bounce-anim">
-            <span class="slide-emoji">🕌</span>
-          </div>
-        </div>
-        <h2 class="slide-title">قوالب جاهزة</h2>
-        <p class="slide-sub">تذكيرات الصلاة وغيرها جاهزة بنقرة واحدة</p>
-      </div>
-
-      <div class="onboarding-slide" data-slide="3">
-        <div class="slide-visual">
-          <div class="slide-icon-wrap rotate-anim">
-            <span class="slide-emoji">📅</span>
-          </div>
-        </div>
-        <h2 class="slide-title">ابدأ الآن</h2>
-        <p class="slide-sub">نظّم يومك وأدِر مواعيدك بسهولة تامة</p>
-      </div>
-
     </div>
+  </header>
 
-    <div class="onboarding-dots">
-      <span class="dot active" data-dot="0"></span>
-      <span class="dot" data-dot="1"></span>
-      <span class="dot" data-dot="2"></span>
-      <span class="dot" data-dot="3"></span>
-    </div>
+  <main class="page-container">
+    <section id="page-home" class="page active">
+      <div class="greeting-card">
+        <div><p class="greeting-date" id="greetingDate"></p></div>
+        <div class="greeting-stat"><span class="stat-num" id="todayCount">0</span><span class="stat-label">تذكير اليوم</span></div>
+      </div>
+      <div class="section-header"><h3 class="section-title">قوالب سريعة</h3></div>
+      <div class="templates-scroll">
+        <button class="template-chip" data-template="fajr">🕌 الفجر</button>
+        <button class="template-chip" data-template="dhuhr">☀️ الظهر</button>
+        <button class="template-chip" data-template="asr">🌤️ العصر</button>
+        <button class="template-chip" data-template="maghrib">🌅 المغرب</button>
+        <button class="template-chip" data-template="isha">🌙 العشاء</button>
+        <button class="template-chip" data-template="medicine">💊 دواء</button>
+        <button class="template-chip" data-template="meeting">📋 اجتماع</button>
+      </div>
+      <div class="section-header"><h3 class="section-title">مهام اليوم</h3><button class="btn-add-task" id="addTaskBtn">+ إضافة</button></div>
+      <div id="taskList" class="task-list"><div class="empty-state">📭 لا توجد مهام</div></div>
+    </section>
 
-    <div class="onboarding-actions">
-      <button id="ob-next" class="btn-primary-large">التالي</button>
-      <button id="ob-skip" class="btn-ghost">تخطي</button>
+    <section id="page-calendar" class="page">
+      <div style="background:var(--bg-surface);border-radius:28px;padding:1rem">
+        <div style="display:flex;justify-content:space-between;margin-bottom:1rem"><button id="prevMonth">▶</button><h3 id="calMonthLabel"></h3><button id="nextMonth">◀</button></div>
+        <div class="cal-days-header" style="display:grid;grid-template-columns:repeat(7,1fr);text-align:center;font-size:0.7rem">أح إث ثل أر خم جم سب</div>
+        <div id="calGrid" class="cal-grid"></div>
+      </div>
+      <div class="section-header"><h3 id="calSelectedLabel">المهام</h3></div>
+      <div id="calTaskList" class="task-list"></div>
+    </section>
+
+    <section id="page-settings" class="page">
+      <div class="settings-item"><div>🌙 الوضع الداكن</div><label class="toggle-switch"><input type="checkbox" id="darkModeSwitch"><span class="toggle-track"></span></label></div>
+      <div class="settings-item"><div>📳 الاهتزاز عند التنبيه</div><label class="toggle-switch"><input type="checkbox" id="vibrationSwitch" checked><span class="toggle-track"></span></label></div>
+      <div class="settings-item"><div>🔁 تكرار التنبيه (ثانية)</div><select id="repeatInterval"><option value="3">3</option><option value="5" selected>5</option><option value="10">10</option></select></div>
+      <div class="settings-item"><div>🗑️ مسح كل البيانات</div><button id="clearDataBtn" style="background:#EF4444;color:white;border:none;padding:6px 16px;border-radius:40px">مسح</button></div>
+      <div class="settings-item"><div>👁️ الصاحب الصامت v1.0</div><span>تذكير بصري واهتزاز</span></div>
+    </section>
+  </main>
+
+  <nav class="bottom-nav">
+    <button class="nav-item active" data-page="home"><span class="nav-icon">🏠</span><span class="nav-label">الرئيسية</span></button>
+    <button class="nav-item" data-page="calendar"><span class="nav-icon">📅</span><span class="nav-label">التقويم</span></button>
+    <button class="nav-item" id="fabBtn"><div class="fab-inner"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div></button>
+    <button class="nav-item" data-page="settings"><span class="nav-icon">⚙️</span><span class="nav-label">الإعدادات</span></button>
+    <div></div>
+  </nav>
+</div>
+
+<div id="taskModal" class="modal-overlay hidden">
+  <div class="modal-sheet"><div class="modal-header"><h3 id="modalTitle">مهمة جديدة</h3><button id="closeModal" style="background:none;border:none;font-size:24px">✕</button></div>
+    <div class="modal-body">
+      <div class="icon-picker" id="iconPicker"><button class="icon-opt active" data-icon="🔔">🔔</button><button class="icon-opt" data-icon="🕌">🕌</button><button class="icon-opt" data-icon="💊">💊</button><button class="icon-opt" data-icon="📋">📋</button><button class="icon-opt" data-icon="🏃">🏃</button><button class="icon-opt" data-icon="🍽️">🍽️</button></div>
+      <input type="text" id="taskTitle" class="form-input" placeholder="العنوان *">
+      <textarea id="taskDesc" class="form-textarea" placeholder="وصف"></textarea>
+      <div class="form-row"><input type="date" id="taskDate" class="form-input"><input type="time" id="taskTime" class="form-input"></div>
+      <div class="color-picker" id="colorPicker"><button class="color-opt active" data-color="#6C63FF" style="background:#6C63FF"></button><button class="color-opt" data-color="#FF6B6B" style="background:#FF6B6B"></button><button class="color-opt" data-color="#4ECDC4" style="background:#4ECDC4"></button><button class="color-opt" data-color="#FFA23A" style="background:#FFA23A"></button></div>
+      <label style="display:flex;justify-content:space-between"><span>مفعّل</span><input type="checkbox" id="taskEnabled" checked></label>
     </div>
+    <div class="modal-footer"><button id="cancelTask" class="btn-secondary">إلغاء</button><button id="saveTask" class="btn-primary">حفظ</button></div>
   </div>
+</div>
 
-  <!-- ══════════════════════════════════
-       MAIN APP SHELL
-  ══════════════════════════════════ -->
-  <div id="app" class="app-shell hidden">
+<div id="alertOverlay" class="alert-overlay hidden">
+  <div class="alert-flash-layer"></div>
+  <div class="alert-content"><div class="alert-icon-wrap" id="alertIcon">🔔</div><h2 class="alert-title" id="alertTitle">تذكير!</h2><p id="alertDesc"></p><div id="alertTime"></div><button class="alert-done-btn" id="alertDoneBtn">✓ تم الإقرار</button></div>
+</div>
+<div id="toast" class="toast hidden"></div>
 
-    <!-- Status Bar Spacer -->
-    <div class="status-bar-spacer"></div>
+<script>
+  (function(){
+    const STORAGE_KEYS = { TASKS:'silentbuddy_tasks', SETTINGS:'silentbuddy_settings' };
+    let tasks = [];
+    let settings = { darkMode:false, vibration:true, repeatInterval:5 };
+    let currentPage = 'home';
+    let editingId = null;
+    let activeAlertTask = null;
+    let alertIntervalId = null;
+    let checkInterval = null;
+    let currentCalYear = new Date().getFullYear();
+    let currentCalMonth = new Date().getMonth();
+    let selectedCalDay = null;
 
-    <!-- ── TOP APP BAR ── -->
-    <header class="top-bar" id="topBar">
-      <div class="top-bar-content">
-        <div class="top-bar-title-wrap">
-          <span class="app-logo-dot"></span>
-          <h1 class="top-bar-title" id="pageTitle">الرئيسية</h1>
-        </div>
-        <div class="top-bar-actions">
-          <button class="icon-btn" id="darkModeToggle" aria-label="تبديل الوضع">
-            <svg class="icon sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-            <svg class="icon moon-icon hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-          </button>
-          <button class="icon-btn" id="notifPermBtn" aria-label="إشعارات">
-            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-          </button>
-        </div>
-      </div>
-    </header>
+    const DOM = {
+      app: document.getElementById('app'),
+      pages: document.querySelectorAll('.page'),
+      navItems: document.querySelectorAll('[data-page]'),
+      fabBtn: document.getElementById('fabBtn'),
+      addTaskBtn: document.getElementById('addTaskBtn'),
+      taskList: document.getElementById('taskList'),
+      todayCount: document.getElementById('todayCount'),
+      greetingDate: document.getElementById('greetingDate'),
+      darkModeToggle: document.getElementById('darkModeToggle'),
+      darkModeSwitch: document.getElementById('darkModeSwitch'),
+      vibrationSwitch: document.getElementById('vibrationSwitch'),
+      repeatInterval: document.getElementById('repeatInterval'),
+      clearDataBtn: document.getElementById('clearDataBtn'),
+      notifPermBtn: document.getElementById('notifPermBtn'),
+      taskModal: document.getElementById('taskModal'),
+      modalTitle: document.getElementById('modalTitle'),
+      taskTitle: document.getElementById('taskTitle'),
+      taskDesc: document.getElementById('taskDesc'),
+      taskDate: document.getElementById('taskDate'),
+      taskTime: document.getElementById('taskTime'),
+      taskEnabled: document.getElementById('taskEnabled'),
+      iconPicker: document.getElementById('iconPicker'),
+      colorPicker: document.getElementById('colorPicker'),
+      saveTask: document.getElementById('saveTask'),
+      cancelTask: document.getElementById('cancelTask'),
+      closeModal: document.getElementById('closeModal'),
+      alertOverlay: document.getElementById('alertOverlay'),
+      alertIcon: document.getElementById('alertIcon'),
+      alertTitle: document.getElementById('alertTitle'),
+      alertDesc: document.getElementById('alertDesc'),
+      alertTime: document.getElementById('alertTime'),
+      alertDoneBtn: document.getElementById('alertDoneBtn'),
+      toast: document.getElementById('toast'),
+      calMonthLabel: document.getElementById('calMonthLabel'),
+      calGrid: document.getElementById('calGrid'),
+      prevMonth: document.getElementById('prevMonth'),
+      nextMonth: document.getElementById('nextMonth'),
+      calTaskList: document.getElementById('calTaskList'),
+      calSelectedLabel: document.getElementById('calSelectedLabel'),
+      pageTitle: document.getElementById('pageTitle'),
+      templateChips: document.querySelectorAll('.template-chip')
+    };
 
-    <!-- ── PAGE CONTAINER ── -->
-    <main class="page-container">
+    function loadData(){
+      const savedTasks = localStorage.getItem(STORAGE_KEYS.TASKS);
+      if(savedTasks) tasks = JSON.parse(savedTasks);
+      const savedSettings = localStorage.getItem(STORAGE_KEYS.SETTINGS);
+      if(savedSettings) settings = {...settings, ...JSON.parse(savedSettings)};
+    }
+    function saveTasks(){ localStorage.setItem(STORAGE_KEYS.TASKS, JSON.stringify(tasks)); }
+    function saveSettings(){ localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settings)); }
 
-      <!-- ─── HOME PAGE ─── -->
-      <section id="page-home" class="page active">
+    function applySettings(){
+      document.body.classList.toggle('dark-mode', settings.darkMode);
+      if(DOM.darkModeSwitch) DOM.darkModeSwitch.checked = settings.darkMode;
+      if(DOM.vibrationSwitch) DOM.vibrationSwitch.checked = settings.vibration;
+      if(DOM.repeatInterval) DOM.repeatInterval.value = settings.repeatInterval;
+    }
 
-        <!-- Greeting -->
-        <div class="greeting-card">
-          <div class="greeting-text">
-            <p class="greeting-label">مرحباً 👋</p>
-            <h2 class="greeting-date" id="greetingDate"></h2>
-          </div>
-          <div class="greeting-stat">
-            <span class="stat-num" id="todayCount">0</span>
-            <span class="stat-label">تذكير اليوم</span>
-          </div>
-        </div>
+    function showToast(msg, duration=2000){
+      DOM.toast.textContent = msg;
+      DOM.toast.classList.remove('hidden');
+      setTimeout(()=> DOM.toast.classList.add('hidden'), duration);
+    }
 
-        <!-- Quick Templates -->
-        <div class="section-header">
-          <h3 class="section-title">قوالب سريعة</h3>
-        </div>
-        <div class="templates-scroll">
-          <button class="template-chip" data-template="fajr">
-            <span class="chip-icon">🕌</span>
-            <span>الفجر</span>
-          </button>
-          <button class="template-chip" data-template="dhuhr">
-            <span class="chip-icon">☀️</span>
-            <span>الظهر</span>
-          </button>
-          <button class="template-chip" data-template="asr">
-            <span class="chip-icon">🌤️</span>
-            <span>العصر</span>
-          </button>
-          <button class="template-chip" data-template="maghrib">
-            <span class="chip-icon">🌅</span>
-            <span>المغرب</span>
-          </button>
-          <button class="template-chip" data-template="isha">
-            <span class="chip-icon">🌙</span>
-            <span>العشاء</span>
-          </button>
-          <button class="template-chip" data-template="medicine">
-            <span class="chip-icon">💊</span>
-            <span>دواء</span>
-          </button>
-          <button class="template-chip" data-template="meeting">
-            <span class="chip-icon">📋</span>
-            <span>اجتماع</span>
-          </button>
-        </div>
+    function todayString(){ const d=new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
+    function pad2(n){ return String(n).padStart(2,'0'); }
 
-        <!-- Today's Tasks -->
-        <div class="section-header">
-          <h3 class="section-title">مهام اليوم</h3>
-          <button class="btn-add-task" id="addTaskBtn">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            إضافة
-          </button>
-        </div>
+    function renderHome(){
+      const today = todayString();
+      const todayTasks = tasks.filter(t=> t.date === today);
+      DOM.todayCount.textContent = todayTasks.length;
+      const container = DOM.taskList;
+      container.innerHTML = '';
+      if(todayTasks.length===0){ container.innerHTML='<div class="empty-state">📭 لا توجد مهام اليوم</div>'; return; }
+      todayTasks.sort((a,b)=>a.time.localeCompare(b.time)).forEach(task=>{
+        const card = document.createElement('div');
+        card.className = 'task-card';
+        card.style.setProperty('--task-color', task.color || '#6C63FF');
+        card.innerHTML = `
+          <div class="task-icon-wrap">${task.icon || '🔔'}</div>
+          <div class="task-body"><div class="task-title">${escapeHtml(task.title)}</div>${task.desc?`<div class="task-desc">${escapeHtml(task.desc)}</div>`:''}<div class="task-meta"><span class="task-time-badge">⏰ ${task.time}</span></div></div>
+          <div class="task-actions"><button class="task-action-btn" data-action="done" data-id="${task.id}">✓</button><button class="task-action-btn" data-action="edit" data-id="${task.id}">✎</button><button class="task-action-btn" data-action="delete" data-id="${task.id}">🗑️</button></div>
+        `;
+        card.querySelectorAll('[data-action]').forEach(btn=>{
+          btn.addEventListener('click', (e)=>{ e.stopPropagation(); handleTaskAction(btn.dataset.action, btn.dataset.id); });
+        });
+        container.appendChild(card);
+      });
+      const dateNow = new Date().toLocaleDateString('ar-EG', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+      DOM.greetingDate.textContent = dateNow;
+    }
 
-        <div id="taskList" class="task-list">
-          <div class="empty-state" id="emptyState">
-            <div class="empty-icon">📭</div>
-            <p>لا توجد مهام لهذا اليوم</p>
-            <button class="btn-ghost-accent" id="emptyAddBtn">أضف مهمة جديدة</button>
-          </div>
-        </div>
+    function handleTaskAction(action, id){
+      const task = tasks.find(t=>t.id===id);
+      if(!task) return;
+      if(action==='delete'){ tasks = tasks.filter(t=>t.id!==id); saveTasks(); renderHome(); if(currentPage==='calendar') renderCalendar(); showToast('تم الحذف'); }
+      else if(action==='edit'){ openModal(task); }
+      else if(action==='done'){ task.done = !task.done; saveTasks(); renderHome(); if(currentPage==='calendar') renderCalendar(); showToast(task.done?'✅ تم':'↩️ تراجع'); }
+    }
 
-      </section>
+    function openModal(task=null){
+      editingId = task?.id || null;
+      DOM.modalTitle.textContent = task?'تعديل مهمة':'مهمة جديدة';
+      DOM.taskTitle.value = task?.title || '';
+      DOM.taskDesc.value = task?.desc || '';
+      DOM.taskDate.value = task?.date || todayString();
+      DOM.taskTime.value = task?.time || '12:00';
+      DOM.taskEnabled.checked = task?.enabled !== undefined ? task.enabled : true;
+      const curIcon = task?.icon || '🔔';
+      Array.from(DOM.iconPicker.querySelectorAll('.icon-opt')).forEach(opt=> opt.classList.toggle('active', opt.dataset.icon === curIcon));
+      const curColor = task?.color || '#6C63FF';
+      Array.from(DOM.colorPicker.querySelectorAll('.color-opt')).forEach(opt=> opt.classList.toggle('active', opt.dataset.color === curColor));
+      DOM.taskModal.classList.remove('hidden');
+    }
+    function closeModal(){ DOM.taskModal.classList.add('hidden'); editingId=null; }
+    function saveModal(){
+      const title = DOM.taskTitle.value.trim();
+      const date = DOM.taskDate.value;
+      const time = DOM.taskTime.value;
+      if(!title || !date || !time){ showToast('⚠️ أكمل الحقول'); return; }
+      const icon = DOM.iconPicker.querySelector('.icon-opt.active')?.dataset.icon || '🔔';
+      const color = DOM.colorPicker.querySelector('.color-opt.active')?.dataset.color || '#6C63FF';
+      if(editingId){
+        const idx = tasks.findIndex(t=>t.id===editingId);
+        if(idx!==-1){
+          tasks[idx] = {...tasks[idx], title, desc:DOM.taskDesc.value, date, time, icon, color, enabled:DOM.taskEnabled.checked };
+        }
+      } else {
+        tasks.push({ id:Date.now()+''+Math.random(), title, desc:DOM.taskDesc.value, date, time, icon, color, enabled:DOM.taskEnabled.checked, done:false });
+      }
+      saveTasks();
+      closeModal();
+      renderHome();
+      if(currentPage==='calendar') renderCalendar();
+      showToast('تم الحفظ');
+    }
 
-      <!-- ─── CALENDAR PAGE ─── -->
-      <section id="page-calendar" class="page">
-        <div class="calendar-wrap">
-          <div class="calendar-header">
-            <button class="cal-nav-btn" id="prevMonth">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
-            </button>
-            <h3 id="calMonthLabel" class="cal-month-label"></h3>
-            <button class="cal-nav-btn" id="nextMonth">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
-            </button>
-          </div>
-          <div class="cal-days-header">
-            <span>أح</span><span>إث</span><span>ثل</span><span>أر</span><span>خم</span><span>جم</span><span>سب</span>
-          </div>
-          <div class="cal-grid" id="calGrid"></div>
-        </div>
+    function renderCalendar(){
+      const year=currentCalYear, month=currentCalMonth;
+      DOM.calMonthLabel.textContent = `${year} / ${month+1}`;
+      const firstDay = new Date(year,month,1).getDay();
+      const daysInMonth = new Date(year,month+1,0).getDate();
+      const taskDates = new Set(tasks.filter(t=> t.date.startsWith(`${year}-${pad2(month+1)}`)).map(t=>t.date));
+      DOM.calGrid.innerHTML='';
+      for(let i=0;i<firstDay;i++){ const d=document.createElement('div'); d.className='cal-day other-month'; d.textContent=''; DOM.calGrid.appendChild(d); }
+      for(let d=1;d<=daysInMonth;d++){
+        const dateStr = `${year}-${pad2(month+1)}-${pad2(d)}`;
+        const dayDiv = document.createElement('div');
+        dayDiv.className = 'cal-day';
+        dayDiv.textContent = d;
+        if(dateStr === todayString()) dayDiv.classList.add('today');
+        if(selectedCalDay === dateStr) dayDiv.classList.add('selected');
+        if(taskDates.has(dateStr)) dayDiv.style.fontWeight='bold';
+        dayDiv.addEventListener('click',()=>{ selectedCalDay=dateStr; renderCalendar(); showDayTasks(dateStr); });
+        DOM.calGrid.appendChild(dayDiv);
+      }
+      if(selectedCalDay) showDayTasks(selectedCalDay);
+      else DOM.calTaskList.innerHTML='<div class="empty-state">اختر يومًا</div>';
+    }
+    function showDayTasks(dateStr){
+      const dayTasks = tasks.filter(t=>t.date===dateStr);
+      DOM.calSelectedLabel.textContent = `مهام ${dateStr}`;
+      const container = DOM.calTaskList;
+      container.innerHTML='';
+      if(dayTasks.length===0){ container.innerHTML='<div class="empty-state">📭 لا توجد مهام</div>'; return; }
+      dayTasks.forEach(task=>{
+        const div=document.createElement('div');
+        div.className='task-card';
+        div.style.setProperty('--task-color', task.color);
+        div.innerHTML=`<div class="task-icon-wrap">${task.icon}</div><div class="task-body"><div class="task-title">${escapeHtml(task.title)}</div><div class="task-meta"><span>⏰ ${task.time}</span></div></div><div class="task-actions"><button data-action="done" data-id="${task.id}">✓</button></div>`;
+        div.querySelector('[data-action]')?.addEventListener('click',(e)=>{ e.stopPropagation(); handleTaskAction('done',task.id); });
+        container.appendChild(div);
+      });
+    }
 
-        <div class="section-header" style="margin-top:1.5rem">
-          <h3 class="section-title" id="calSelectedLabel">المهام</h3>
-        </div>
-        <div id="calTaskList" class="task-list"></div>
-      </section>
-
-      <!-- ─── SETTINGS PAGE ─── -->
-      <section id="page-settings" class="page">
-        <div class="settings-list">
-
-          <div class="settings-group">
-            <h4 class="settings-group-title">المظهر</h4>
-            <div class="settings-item">
-              <div class="settings-item-info">
-                <span class="settings-icon">🌙</span>
-                <div>
-                  <p class="settings-label">الوضع الداكن</p>
-                  <p class="settings-desc">تبديل المظهر الفاتح/الداكن</p>
-                </div>
-              </div>
-              <label class="toggle-switch">
-                <input type="checkbox" id="darkModeSwitch" />
-                <span class="toggle-track"></span>
-              </label>
-            </div>
-          </div>
-
-          <div class="settings-group">
-            <h4 class="settings-group-title">الإشعارات</h4>
-            <div class="settings-item">
-              <div class="settings-item-info">
-                <span class="settings-icon">🔔</span>
-                <div>
-                  <p class="settings-label">إشعارات النظام</p>
-                  <p class="settings-desc">السماح بإشعارات المتصفح</p>
-                </div>
-              </div>
-              <button class="btn-small-accent" id="reqNotifBtn">تفعيل</button>
-            </div>
-            <div class="settings-item">
-              <div class="settings-item-info">
-                <span class="settings-icon">📳</span>
-                <div>
-                  <p class="settings-label">الاهتزاز</p>
-                  <p class="settings-desc">اهتزاز عند التنبيه</p>
-                </div>
-              </div>
-              <label class="toggle-switch">
-                <input type="checkbox" id="vibrationSwitch" checked />
-                <span class="toggle-track"></span>
-              </label>
-            </div>
-            <div class="settings-item">
-              <div class="settings-item-info">
-                <span class="settings-icon">🔁</span>
-                <div>
-                  <p class="settings-label">تكرار التنبيه</p>
-                  <p class="settings-desc">تكرار كل عدة ثوانٍ حتى الإقرار</p>
-                </div>
-              </div>
-              <select class="settings-select" id="repeatInterval">
-                <option value="3">3 ثوانٍ</option>
-                <option value="5" selected>5 ثوانٍ</option>
-                <option value="10">10 ثوانٍ</option>
-                <option value="15">15 ثوانٍ</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="settings-group">
-            <h4 class="settings-group-title">البيانات</h4>
-            <div class="settings-item">
-              <div class="settings-item-info">
-                <span class="settings-icon">🗑️</span>
-                <div>
-                  <p class="settings-label">مسح كل البيانات</p>
-                  <p class="settings-desc">حذف جميع المهام والإعدادات</p>
-                </div>
-              </div>
-              <button class="btn-small-danger" id="clearDataBtn">مسح</button>
-            </div>
-          </div>
-
-          <div class="settings-group">
-            <h4 class="settings-group-title">عن التطبيق</h4>
-            <div class="settings-item about-item">
-              <div class="app-about">
-                <div class="about-logo">👁️</div>
-                <div>
-                  <p class="about-name">بصيرة</p>
-                  <p class="about-ver">الإصدار 1.0.0</p>
-                  <p class="about-desc">تطبيق تذكير يومي للصم وضعاف السمع</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </section>
-
-    </main>
-
-    <!-- ── BOTTOM NAV ── -->
-    <nav class="bottom-nav" id="bottomNav">
-      <button class="nav-item active" data-page="home">
-        <div class="nav-icon-wrap">
-          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-        </div>
-        <span class="nav-label">الرئيسية</span>
-      </button>
-      <button class="nav-item" data-page="calendar">
-        <div class="nav-icon-wrap">
-          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-        </div>
-        <span class="nav-label">التقويم</span>
-      </button>
-      <button class="nav-item nav-fab" id="fabBtn" data-page="">
-        <div class="fab-inner">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        </div>
-      </button>
-      <button class="nav-item" data-page="settings">
-        <div class="nav-icon-wrap">
-          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-        </div>
-        <span class="nav-label">الإعدادات</span>
-      </button>
-      <div class="nav-item nav-placeholder"></div>
-    </nav>
-
-  </div><!-- /#app -->
-
-
-  <!-- ══════════════════════════════════
-       TASK MODAL (Add / Edit)
-  ══════════════════════════════════ -->
-  <div id="taskModal" class="modal-overlay hidden">
-    <div class="modal-sheet" id="taskSheet">
-      <div class="modal-handle"></div>
-      <div class="modal-header">
-        <h3 class="modal-title" id="modalTitle">مهمة جديدة</h3>
-        <button class="modal-close-btn" id="closeModal">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        </button>
-      </div>
-
-      <div class="modal-body">
-        <!-- Icon picker -->
-        <div class="form-group">
-          <label class="form-label">الأيقونة</label>
-          <div class="icon-picker" id="iconPicker">
-            <button class="icon-opt active" data-icon="🔔">🔔</button>
-            <button class="icon-opt" data-icon="🕌">🕌</button>
-            <button class="icon-opt" data-icon="💊">💊</button>
-            <button class="icon-opt" data-icon="📋">📋</button>
-            <button class="icon-opt" data-icon="🏃">🏃</button>
-            <button class="icon-opt" data-icon="🍽️">🍽️</button>
-            <button class="icon-opt" data-icon="💧">💧</button>
-            <button class="icon-opt" data-icon="📚">📚</button>
-            <button class="icon-opt" data-icon="🚗">🚗</button>
-            <button class="icon-opt" data-icon="👨‍👩‍👧">👨‍👩‍👧</button>
-            <button class="icon-opt" data-icon="💰">💰</button>
-            <button class="icon-opt" data-icon="⚽">⚽</button>
-          </div>
-        </div>
-
-        <!-- Title -->
-        <div class="form-group">
-          <label class="form-label" for="taskTitle">العنوان *</label>
-          <input type="text" id="taskTitle" class="form-input" placeholder="أدخل عنوان المهمة" maxlength="60" />
-        </div>
-
-        <!-- Description -->
-        <div class="form-group">
-          <label class="form-label" for="taskDesc">الوصف</label>
-          <textarea id="taskDesc" class="form-textarea" placeholder="تفاصيل إضافية..." rows="3" maxlength="200"></textarea>
-        </div>
-
-        <!-- Date + Time -->
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label" for="taskDate">التاريخ *</label>
-            <input type="date" id="taskDate" class="form-input" />
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="taskTime">الوقت *</label>
-            <input type="time" id="taskTime" class="form-input" />
-          </div>
-        </div>
-
-        <!-- Color tag -->
-        <div class="form-group">
-          <label class="form-label">لون التصنيف</label>
-          <div class="color-picker" id="colorPicker">
-            <button class="color-opt active" data-color="#6C63FF" style="background:#6C63FF"></button>
-            <button class="color-opt" data-color="#FF6B6B" style="background:#FF6B6B"></button>
-            <button class="color-opt" data-color="#4ECDC4" style="background:#4ECDC4"></button>
-            <button class="color-opt" data-color="#FFA23A" style="background:#FFA23A"></button>
-            <button class="color-opt" data-color="#45B7D1" style="background:#45B7D1"></button>
-            <button class="color-opt" data-color="#96CEB4" style="background:#96CEB4"></button>
-            <button class="color-opt" data-color="#FF8B94" style="background:#FF8B94"></button>
-            <button class="color-opt" data-color="#A8E6CF" style="background:#A8E6CF"></button>
-          </div>
-        </div>
-
-        <!-- Repeat / Enable -->
-        <div class="form-group toggle-row">
-          <div>
-            <p class="form-label" style="margin:0">مفعّل</p>
-            <p class="form-hint">تفعيل/تعطيل هذا التذكير</p>
-          </div>
-          <label class="toggle-switch">
-            <input type="checkbox" id="taskEnabled" checked />
-            <span class="toggle-track"></span>
-          </label>
-        </div>
-
-      </div>
-
-      <div class="modal-footer">
-        <button class="btn-secondary" id="cancelTask">إلغاء</button>
-        <button class="btn-primary" id="saveTask">حفظ المهمة</button>
-      </div>
-    </div>
-  </div>
-
-
-  <!-- ══════════════════════════════════
-       FULL-SCREEN ALERT OVERLAY
-  ══════════════════════════════════ -->
-  <div id="alertOverlay" class="alert-overlay hidden">
-    <div class="alert-flash-layer" id="alertFlash"></div>
-    <div class="alert-content shake-anim" id="alertContent">
-      <div class="alert-icon-wrap pulse-big" id="alertIcon">🔔</div>
-      <h1 class="alert-title" id="alertTitle">تذكير!</h1>
-      <p class="alert-desc" id="alertDesc"></p>
-      <div class="alert-time-badge" id="alertTime"></div>
-      <button class="alert-done-btn" id="alertDoneBtn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
-        تم ✓
-      </button>
-      <p class="alert-hint">اضغط "تم" للإقرار بالتذكير</p>
-    </div>
-  </div>
-
-
-  <!-- ══════════════════════════════════
-       TOAST NOTIFICATION
-  ══════════════════════════════════ -->
-  <div id="toast" class="toast hidden"></div>
-
-
-  <!-- ══════════════════════════════════
-       CONFIRM DIALOG
-  ══════════════════════════════════ -->
-  <div id="confirmDialog" class="modal-overlay hidden">
-    <div class="confirm-sheet">
-      <div class="confirm-icon" id="confirmIcon">⚠️</div>
-      <h3 id="confirmTitle">تأكيد</h3>
-      <p id="confirmMsg">هل أنت متأكد؟</p>
-      <div class="confirm-actions">
-        <button id="confirmCancel" class="btn-secondary">إلغاء</button>
-        <button id="confirmOk" class="btn-danger">تأكيد</button>
-      </div>
-    </div>
-  </div>
-
-
-  <script src="script.js"></script>
+    function vibrateNow(){
+      if(settings.vibration && navigator.vibrate) navigator.vibrate([300,100,300]);
+    }
+    async function requestNotificationPerm(){
+      if(!('Notification' in window)){ showToast('المتصفح لا يدعم'); return; }
+      if(Notification.permission === 'granted'){ showToast('✅ مفعلة'); return; }
+      const perm = await Notification.requestPermission();
+      if(perm === 'granted') showToast('✅ تم تفعيل الإشعارات');
+      else showToast('❌ تم الرفض');
+    }
+    function sendBrowserNotif(task){
+      if(Notification.permission === 'granted'){
+        new Notification('🔔 الصاحب الصامت', { body: `${task.title} - ${task.time}`, icon: 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ccircle cx=%2250%22 cy=%2250%22 r=%2250%22 fill=%22%236C63FF%22/%3E%3Ctext x=%2250%22 y=%2270%22 font-size=%2250%22 text-anchor=%22middle%22 fill=%22white%22%3E👁️%3C/text%3E%3C/svg%3E' });
+      }
+    }
+    function fireAlert(task){
+      if(activeAlertTask) return;
+      activeAlertTask = task;
+      DOM.alertIcon.textContent = task.icon || '🔔';
+      DOM.alertTitle.textContent = task.title;
+      DOM.alertDesc.textContent = task.desc || 'تذكير مهم';
+      DOM.alertTime.textContent = `⏰ ${task.time}`;
+      DOM.alertOverlay.classList.remove('hidden');
+      vibrateNow();
+      sendBrowserNotif(task);
+      if(alertIntervalId) clearInterval(alertIntervalId);
+      alertIntervalId = setInterval(()=>{ vibrateNow(); }, settings.repeatInterval * 1000);
+    }
+    function dismissAlert(){
+      if(alertIntervalId){ clearInterval(alertIntervalId); alertIntervalId=null; }
+      if(activeAlertTask){
+        const t = tasks.find(ts=>ts.id===activeAlertTask.id);
+        if(t) t.done = true;
+        saveTasks();
+        activeAlertTask = null;
+      }
+      DOM.alertOverlay.classList.add('hidden');
+      renderHome();
+      if(currentPage==='calendar') renderCalendar();
+      showToast('تم الإقرار');
+    }
+    function checkTasksTime(){
+      if(activeAlertTask) return;
+      const now = new Date();
+      const nowDate = todayString();
+      const nowTime = `${pad2(now.getHours())}:${pad2(now.getMinutes())}`;
+      for(let task of tasks){
+        if(!task.enabled) continue;
+        if(task.done) continue;
+        if(task.date === nowDate && task.time === nowTime){
+          fireAlert(task);
+          break;
+        }
+      }
+    }
+    function navigateTo(page){
+      currentPage = page;
+      DOM.pageTitle.textContent = page==='home'?'الرئيسية':page==='calendar'?'التقويم':'الإعدادات';
+      DOM.pages.forEach(p=>p.classList.toggle('active', p.id === `page-${page}`));
+      DOM.navItems.forEach(btn=>btn.classList.toggle('active', btn.dataset.page === page));
+      if(page==='home') renderHome();
+      if(page==='calendar') renderCalendar();
+    }
+    function seedDemo(){
+      if(tasks.length===0){
+        const today = todayString();
+        tasks.push({ id:'1', title:'أذان الفجر', desc:'اذان', date:today, time:'05:00', icon:'🕌', color:'#6C63FF', enabled:true, done:false });
+        tasks.push({ id:'2', title:'موعد دواء', desc:'لا تنسَ', date:today, time:`${pad2(new Date().getHours())}:${pad2(new Date().getMinutes()+2)}`, icon:'💊', color:'#FF6B6B', enabled:true, done:false });
+        saveTasks();
+      }
+    }
+    function escapeHtml(str){ return str.replace(/[&<>]/g, function(m){if(m==='&')return '&amp;';if(m==='<')return '&lt;';if(m==='>')return '&gt;';return m;}); }
+    function init(){
+      loadData();
+      applySettings();
+      seedDemo();
+      renderHome();
+      navigateTo('home');
+      checkInterval = setInterval(checkTasksTime, 30000);
+      DOM.darkModeToggle.addEventListener('click',()=>{ settings.darkMode=!settings.darkMode; applySettings(); saveSettings(); });
+      DOM.darkModeSwitch.addEventListener('change',(e)=>{ settings.darkMode=e.target.checked; applySettings(); saveSettings(); });
+      DOM.vibrationSwitch.addEventListener('change',(e)=>{ settings.vibration=e.target.checked; saveSettings(); });
+      DOM.repeatInterval.addEventListener('change',(e)=>{ settings.repeatInterval=parseInt(e.target.value); saveSettings(); });
+      DOM.clearDataBtn.addEventListener('click',()=>{ if(confirm('مسح كل البيانات؟')){ localStorage.clear(); location.reload(); } });
+      DOM.notifPermBtn.addEventListener('click',requestNotificationPerm);
+      DOM.fabBtn.addEventListener('click',()=>openModal());
+      DOM.addTaskBtn.addEventListener('click',()=>openModal());
+      DOM.saveTask.addEventListener('click',saveModal);
+      DOM.cancelTask.addEventListener('click',closeModal);
+      DOM.closeModal.addEventListener('click',closeModal);
+      DOM.alertDoneBtn.addEventListener('click',dismissAlert);
+      DOM.prevMonth.addEventListener('click',()=>{ currentCalMonth--; if(currentCalMonth<0){ currentCalMonth=11; currentCalYear--; } selectedCalDay=null; renderCalendar(); });
+      DOM.nextMonth.addEventListener('click',()=>{ currentCalMonth++; if(currentCalMonth>11){ currentCalMonth=0; currentCalYear++; } selectedCalDay=null; renderCalendar(); });
+      DOM.navItems.forEach(btn=>{ if(btn.dataset.page) btn.addEventListener('click',()=>navigateTo(btn.dataset.page)); });
+      DOM.templateChips.forEach(chip=>{
+        chip.addEventListener('click',()=>{
+          const tplMap = { fajr:{title:'أذان الفجر',desc:'اذان',icon:'🕌',time:'05:00',color:'#6C63FF'}, dhuhr:{title:'أذان الظهر',desc:'اذان',icon:'🕌',time:'12:30',color:'#FFA23A'}, asr:{title:'أذان العصر',desc:'اذان',icon:'🕌',time:'15:30',color:'#4ECDC4'}, maghrib:{title:'أذان المغرب',desc:'اذان',icon:'🕌',time:'18:15',color:'#FF6B6B'}, isha:{title:'أذان العشاء',desc:'اذان',icon:'🕌',time:'20:00',color:'#45B7D1'}, medicine:{title:'موعد الدواء',desc:'لا تنسَ',icon:'💊',time:'08:00',color:'#FF8B94'}, meeting:{title:'اجتماع',desc:'مهم',icon:'📋',time:'10:00',color:'#96CEB4'} };
+          const t = tplMap[chip.dataset.template];
+          if(t){
+            openModal();
+            DOM.taskTitle.value = t.title;
+            DOM.taskDesc.value = t.desc;
+            DOM.taskTime.value = t.time;
+            const iconBtn = Array.from(DOM.iconPicker.querySelectorAll('.icon-opt')).find(opt=>opt.dataset.icon===t.icon);
+            if(iconBtn) iconBtn.click();
+            const colorBtn = Array.from(DOM.colorPicker.querySelectorAll('.color-opt')).find(opt=>opt.dataset.color===t.color);
+            if(colorBtn) colorBtn.click();
+          }
+        });
+      });
+      DOM.iconPicker.addEventListener('click',(e)=>{ const b=e.target.closest('.icon-opt'); if(b){ DOM.iconPicker.querySelectorAll('.icon-opt').forEach(o=>o.classList.remove('active')); b.classList.add('active'); } });
+      DOM.colorPicker.addEventListener('click',(e)=>{ const b=e.target.closest('.color-opt'); if(b){ DOM.colorPicker.querySelectorAll('.color-opt').forEach(o=>o.classList.remove('active')); b.classList.add('active'); } });
+      window.addEventListener('beforeinstallprompt', (e)=>{ e.preventDefault(); setTimeout(()=>showToast('📲 يمكن تثبيت التطبيق'), 2000); });
+    }
+    init();
+  })();
+</script>
 </body>
 </html>
